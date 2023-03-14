@@ -8,7 +8,7 @@ const UserImage = ({ image, size = "60px" }) => {
         height={size}
         alt="user"
         crossOrigin="anonymous"
-        src={`http://localhost:3001/assets/${image}`}
+        src={`https://socialthoughts-backend-production.up.railway.app/assets/${image}`}
       />
     </Box>
   );

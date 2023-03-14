@@ -61,7 +61,7 @@ const Form = () => {
     formData.append("picturePath", values.picture.name);
 
     const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
+      "https://socialthoughts-backend-production.up.railway.app/auth/register",
       {
         method: "POST",
         body: formData,
