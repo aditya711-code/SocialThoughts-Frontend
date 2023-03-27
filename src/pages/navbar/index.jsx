@@ -102,7 +102,7 @@ const Navbar = () => {
               input={<InputBase />}
             >
               <MenuItem value="fullName">
-                <Typography>Aditya Mane</Typography>
+                <Typography>{fullName}</Typography>
               </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log out</MenuItem>
             </Select>
