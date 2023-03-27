@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { BASE_URL } from "helper";
 const UserImage = ({ image, size = "60px" }) => {
   return (
     <Box width={size} height={size}>
@@ -8,7 +9,7 @@ const UserImage = ({ image, size = "60px" }) => {
         height={size}
         alt="user"
         crossOrigin="anonymous"
-        src={`https://socialthoughts-backend-production.up.railway.app/assets/${image}`}
+        src={`${BASE_URL}/assets/${image}`}
       />
     </Box>
   );

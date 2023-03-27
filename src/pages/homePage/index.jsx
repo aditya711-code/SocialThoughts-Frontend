@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import PostsWidget from "pages/widgets/PostsWidget";
 import AdvertWidget from "pages/widgets/AdvertWidget";
 import FriendListWidget from "pages/widgets/FirendListWidget";
+
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const { _id, picturePath } = useSelector((state) => state.user);
@@ -16,7 +17,7 @@ const HomePage = () => {
       <Navbar />
       <Box
         width="100%"
-        p="2rem 6%"
+        padding="2rem 6%"
         display={isNonMobileScreens ? "flex" : "block"}
         gap="0.5rem"
         justifyContent="space-between"

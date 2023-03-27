@@ -7,21 +7,19 @@ import FriendListWidget from "pages/widgets/FirendListWidget";
 import MyPostWidget from "pages/widgets/MyPostWidget";
 import PostsWidget from "pages/widgets/PostsWidget";
 import UserWidget from "pages/widgets/UserWidget";
+import { BASE_URL } from "helper";
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const { userId } = useParams();
   const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const getUser = async () => {
-    const response = await fetch(
-      `https://socialthoughts-backend-production.up.railway.app/users/${userId}`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const response = await fetch(`${BASE_URL}/users/${userId}`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const data = await response.json();
-    console.log("data-user", data);
+
     setUser(data);
   };
 

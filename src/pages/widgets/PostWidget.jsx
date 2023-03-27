@@ -11,7 +11,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
-
+import { BASE_URL } from "helper";
 const PostWidget = ({
   postId,
   postUserId,
@@ -22,6 +22,7 @@ const PostWidget = ({
   userPicturePath,
   likes,
   comments,
+  isProfile,
 }) => {
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
@@ -33,17 +34,14 @@ const PostWidget = ({
   const primary = palette.primary.main;
   const main = palette.neutral.main;
   const patchLike = async () => {
-    const response = await fetch(
-      `https://socialthoughts-backend-production.up.railway.app/posts/${postId}/like`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: loggedInUserId }),
-      }
-    );
+    const response = await fetch(`${BASE_URL}/posts/${postId}/like`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: loggedInUserId }),
+    });
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
   };
@@ -55,6 +53,8 @@ const PostWidget = ({
         name={name}
         subtitle={location}
         userPicturePath={userPicturePath}
+        isProfile={isProfile}
+        postId={postId}
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {description}
@@ -65,7 +65,7 @@ const PostWidget = ({
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`https://socialthoughts-backend-production.up.railway.app/assets/${picturePath}`}
+          src={`${BASE_URL}/assets/${picturePath}`}
           crossOrigin="anonymous"
         />
       )}

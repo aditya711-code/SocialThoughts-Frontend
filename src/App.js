@@ -1,4 +1,3 @@
-import "./App.css";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { HomePage, LoginPage, Navbar, ProfilePage } from "./pages/index";
 import { useSelector } from "react-redux";
@@ -11,7 +10,7 @@ function App() {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const isAuth = Boolean(useSelector((state) => state.token));
   return (
-    <div className="App">
+    <div className="app">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />

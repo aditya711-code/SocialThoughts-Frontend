@@ -1,8 +1,7 @@
 import { Typography, useTheme } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
-import { Link } from "react-router-dom";
-
+import { BASE_URL } from "helper";
 const AdvertWidget = () => {
   const { palette } = useTheme();
   const dark = palette.neutral.dark;
@@ -20,7 +19,7 @@ const AdvertWidget = () => {
         width="100%"
         height="auto"
         alt="advert"
-        src="https://socialthoughts-backend-production.up.railway.app/assets/info4.jpg"
+        src={`${BASE_URL}/assets/info4.jpg`}
         style={{ borderRadius: "0.75rem", margin: "0.75rem 0" }}
         crossOrigin="anonymous"
       />
