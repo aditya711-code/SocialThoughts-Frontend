@@ -12,7 +12,7 @@ const FriendListWidget = ({ userId }) => {
   const friends = useSelector((state) => state.user.friends);
 
   const getFriends = async () => {
-    const response = await fetch(`${BASE_URL}/${userId}/friends`, {
+    const response = await fetch(`${BASE_URL}/users/${userId}/friends`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -38,9 +38,10 @@ const FriendListWidget = ({ userId }) => {
         FriendList
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
-          <Friend
-            key={friend._id}
+        {friends.map((friend, index) => (
+
+          < Friend
+            key={index}
             friendId={friend._id}
             name={`${friend.firstName} ${friend.lastName}`}
             subtitle={friend.occupation}
