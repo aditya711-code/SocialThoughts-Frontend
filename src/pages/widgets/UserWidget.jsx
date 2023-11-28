@@ -8,11 +8,17 @@ import { Box, Typography, Divider, useTheme } from "@mui/material";
 import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "helper";
+import Avatar from '@mui/material/Avatar';
+import Skeleton from '@mui/material/Skeleton';
+import { Settings } from "pages";
+import { setOpen } from "state";
+
 const UserWidget = ({ userId, picturePath }) => {
+
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
@@ -20,6 +26,11 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
+  const open = useSelector(state => state.isOpen)
+  const dispatch = useDispatch()
+  const handleOpen = () => {
+    dispatch(setOpen({ open }))
+  }
   const getUser = async (req, res) => {
     const response = await fetch(`${BASE_URL}/users/${userId}`, {
       method: "GET",
@@ -32,7 +43,23 @@ const UserWidget = ({ userId, picturePath }) => {
     getUser();
   }, []);
   if (!user) {
-    return null;
+
+    return (
+      <div>
+        <Skeleton variant="circular">
+          <Avatar />
+        </Skeleton>
+        <Skeleton width="100%">
+          <Typography>.</Typography>
+        </Skeleton>
+        <Skeleton variant="rectangular" width="100%" height="100%">
+          <div style={{ paddingTop: "57%" }} />
+        </Skeleton>
+        <Skeleton variant='h3' />
+        <Skeleton />
+
+      </div>
+    )
   }
   const {
     firstName,
@@ -50,7 +77,6 @@ const UserWidget = ({ userId, picturePath }) => {
       <FlexBetween
         gap="0.5rem"
         pb="1.1rem"
-        onClick={() => navigate(`/profile/${userId}`)}
       >
         <FlexBetween gap="1rem">
           <UserImage image={picturePath} />
@@ -65,13 +91,23 @@ const UserWidget = ({ userId, picturePath }) => {
                   cursor: "pointer",
                 },
               }}
+              onClick={() => navigate(`/profile/${userId}`)}
             >
               {firstName} {lastName}
             </Typography>
             <Typography color={medium}>{friends.length} Friends</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined />
+        <ManageAccountsOutlined sx={{
+          "&:hover": {
+            color: palette.primary.main,
+            cursor: "pointer",
+          },
+
+        }}
+          onClick={handleOpen}
+        />
+        <Settings />
       </FlexBetween>
       <Divider />
       {/*SECOND ROW*/}

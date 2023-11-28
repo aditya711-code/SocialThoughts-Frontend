@@ -4,9 +4,10 @@ const LoginPage = () => {
   const theme = useTheme();
   const isNonMobileScrens = useMediaQuery("(min-width:1000px)");
   return (
-    <Box>
+    <Box width='100%' height='100%'>
       <Box
         width="100%"
+        height="100%"
         backgroundColor={theme.palette.background.alt}
         padding="1rem 6%"
         textAlign="center"

@@ -15,7 +15,10 @@ import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { BASE_URL } from "helper";
+import { BASE_URL } from "helper"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios"
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
@@ -68,31 +71,33 @@ const Form = () => {
     onSubmitProps.resetForm();
 
     if (savedUser) {
+      toast.success('User registered successfully', { position: "top-right", autoClose: 5000 })
       setPageType("login");
     }
   };
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch(`${BASE_URL}/auth/login`, {
+    axios.post(`${BASE_URL}/auth/login`, values, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(values),
-    });
+    }).then((response) => {
+      console.log("response", response)
+      const loggedIn = response.data;
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        toast.success('Logged In successfully', { position: "top-right", autoClose: 5000 })
+        navigate("/home");
+      }
+    }).catch((err) => {
+      toast.error(err.message, { position: "top-right", autoClose: 10000 })
+    })
 
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      
-     
-      navigate("/home");
-    }
   };
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (isLogin) await login(values, onSubmitProps);

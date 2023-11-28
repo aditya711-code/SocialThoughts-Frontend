@@ -8,6 +8,9 @@ import MyPostWidget from "pages/widgets/MyPostWidget";
 import PostsWidget from "pages/widgets/PostsWidget";
 import UserWidget from "pages/widgets/UserWidget";
 import { BASE_URL } from "helper";
+import Avatar from '@mui/material/Avatar';
+import Skeleton from '@mui/material/Skeleton';
+import { Typography } from "@mui/material";
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const { userId } = useParams();
@@ -19,14 +22,33 @@ const ProfilePage = () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
-
     setUser(data);
   };
 
   useEffect(() => {
     getUser();
   }, []);
-  if (!user) return null;
+  if (!user) {
+
+    return (
+      <div>
+        <Skeleton variant="circular">
+          <Avatar />
+        </Skeleton>
+        <Skeleton width="100%">
+          <Typography>.</Typography>
+        </Skeleton>
+        <Skeleton variant="rectangular" width="100%" height="100%">
+          <div style={{ paddingTop: "57%" }} />
+        </Skeleton>
+        <Skeleton variant='h3' />
+        <Skeleton />
+
+      </div>
+    )
+
+
+  }
   return (
     <Box>
       <Navbar />
