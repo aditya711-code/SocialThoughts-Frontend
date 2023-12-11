@@ -8,6 +8,9 @@ import UserImage from "components/UserImage";
 import { setOpen } from "state";
 import { Formik } from "formik";
 import { setLogin } from "state";
+import Dropzone from "react-dropzone";
+import FlexBetween from "components/FlexBetween";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 const style = {
   position: 'absolute',
   display: 'flex',
@@ -33,15 +36,23 @@ const Settings = () => {
   const handleClose = () => {
     dispatch(setOpen({ open }))
   }
-  console.log("user", user)
   const initialValues = {
     firstName: user.firstName,
     lastName: user.lastName,
     occupation: user.occupation,
     location: user.location,
+    picture: user.picturePath,
+
   }
   const updateData = (values, onSubmitProps) => {
-    axios.patch(`${BASE_URL}/users/${user._id}`, values, {
+    console.log("values", values)
+    const formData = new FormData();
+    for (let value in values) {
+      formData.append(value, values[value]);
+    }
+    formData.append("picturePath", values.picture.name);
+    console.log("FormData", formData)
+    axios.patch(`${BASE_URL}/users/${user._id}`, formData, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -50,7 +61,6 @@ const Settings = () => {
     }).then((response) => {
       const user = response.data;
       if (user) {
-        console.log("loggedIn", user)
         dispatch(
           setLogin({
             user: user,
@@ -59,7 +69,7 @@ const Settings = () => {
         );
         toast.success('Updated successfully', { position: "top-right", autoClose: 5000 })
         dispatch(setOpen({ open }))
-        window.location.reload()
+        // window.location.reload()
 
       }
     }).catch((err) => {
@@ -69,6 +79,7 @@ const Settings = () => {
 
   }
   const handleFormSubmit = async (values, onSubmitProps) => {
+    console.log("updated function")
     await updateData(values, onSubmitProps)
 
 
@@ -82,94 +93,121 @@ const Settings = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-        >
+        <div>
+          <Formik
+            onSubmit={handleFormSubmit}
+            initialValues={initialValues}
+          >
 
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              setFieldValue,
 
 
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <Box
-                display="grid"
-                gap="30px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                sx={style}
-              >
-                <UserImage image={user.picturePath} />
-                <TextField
-                  label="First Name"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.firstName}
-                  name="firstName"
-                  // error={
-                  //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                  // }
-                  // helperText={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                <TextField
-                  label="Last Name"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.lastName}
-                  name="lastName"
-                  // error={
-                  //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                  // }
-                  // helperText={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2" }}
-                /><TextField
-                  label="Location"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.location}
-                  name="location"
-                  // error={
-                  //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                  // }
-                  // helperText={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                <TextField
-                  label="Occupation"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.occupation}
-                  name="occupation"
-                  // error={
-                  //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                  // }
-                  // helperText={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2" }}
-                />
-                <Button
-
-                  type="submit"
-                  sx={{
-
-                    p: "1rem",
-                    backgroundColor: palette.primary.main,
-                    color: palette.background.alt,
-                    "&:hover": { color: palette.primary.main },
-                  }}
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap="30px"
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  sx={style}
                 >
-                  Submit
-                </Button>
-              </Box>
+                  <UserImage image={user.picturePath} />
+                  <Dropzone onDrop={(acceptedFiles) => {
+                    setFieldValue("picture", acceptedFiles[0])
 
-            </form>
-          )}
-        </Formik>
+                    console.log("picture-value", values.picture)
+                  }}>
+                    {({ getRootProps, getInputProps }) => (
+                      <Box
+                        {...getRootProps()}
+                        border={`2px dashed ${palette.primary.main}`}
+                        p="1rem"
+                        sx={{ "&:hover": { cursor: "pointer" } }}
+                      >
+                        <input {...getInputProps()} />
+                        {!values.picture ? (
+                          <p>Add Picture Here</p>
+                        ) : (
+                          <FlexBetween>
+                            <Typography>{values.picture.name}</Typography>
+                            <EditOutlinedIcon />
+                          </FlexBetween>
+                        )}
+                      </Box>
+                    )}
+                  </Dropzone>
+                  <TextField
+                    label="First Name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.firstName}
+                    name="firstName"
+                    // error={
+                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
+                    // }
+                    // helperText={touched.firstName && errors.firstName}
+                    sx={{ gridColumn: "span 2" }}
+                  />
+                  <TextField
+                    label="Last Name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.lastName}
+                    name="lastName"
+                    // error={
+                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
+                    // }
+                    // helperText={touched.firstName && errors.firstName}
+                    sx={{ gridColumn: "span 2" }}
+                  /><TextField
+                    label="Location"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.location}
+                    name="location"
+                    // error={
+                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
+                    // }
+                    // helperText={touched.firstName && errors.firstName}
+                    sx={{ gridColumn: "span 2" }}
+                  />
+                  <TextField
+                    label="Occupation"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.occupation}
+                    name="occupation"
+                    // error={
+                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
+                    // }
+                    // helperText={touched.firstName && errors.firstName}
+                    sx={{ gridColumn: "span 2" }}
+                  />
+                  <Button
+
+                    type="submit"
+                    sx={{
+
+                      p: "1rem",
+                      backgroundColor: palette.primary.main,
+                      color: palette.background.alt,
+                      "&:hover": { color: palette.primary.main },
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
+
+              </form>
+            )}
+          </Formik>
+        </div>
       </Modal>
     </>
   );
