@@ -56,7 +56,7 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
-    //this allows to send form info withh image
+    //this allows to send form info withh imaage
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
@@ -82,7 +82,7 @@ const Form = () => {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      console.log("response", response)
+
       const loggedIn = response.data;
       if (loggedIn) {
         dispatch(
