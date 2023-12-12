@@ -27,7 +27,6 @@ const style = {
 
 const Settings = () => {
 
-
   const { palette } = useTheme();
   const user = useSelector(state => state.user)
   const token = useSelector(state => state.token)
@@ -41,17 +40,17 @@ const Settings = () => {
     lastName: user.lastName,
     occupation: user.occupation,
     location: user.location,
-    picture: user.picturePath,
+    picture: { name: user.picturePath },
 
   }
   const updateData = (values, onSubmitProps) => {
-    console.log("values", values)
+
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
-    formData.append("picturePath", values.picture.name);
-    console.log("FormData", formData)
+
+    formData.append("picturePath", values?.picture?.name);
     axios.patch(`${BASE_URL}/users/${user._id}`, formData, {
       method: "PATCH",
       headers: {
@@ -69,7 +68,7 @@ const Settings = () => {
         );
         toast.success('Updated successfully', { position: "top-right", autoClose: 5000 })
         dispatch(setOpen({ open }))
-        // window.location.reload()
+
 
       }
     }).catch((err) => {
@@ -79,10 +78,7 @@ const Settings = () => {
 
   }
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log("updated function")
     await updateData(values, onSubmitProps)
-
-
   }
   return (
     <>
@@ -120,8 +116,6 @@ const Settings = () => {
                   <UserImage image={user.picturePath} />
                   <Dropzone onDrop={(acceptedFiles) => {
                     setFieldValue("picture", acceptedFiles[0])
-
-                    console.log("picture-value", values.picture)
                   }}>
                     {({ getRootProps, getInputProps }) => (
                       <Box
@@ -131,7 +125,7 @@ const Settings = () => {
                         sx={{ "&:hover": { cursor: "pointer" } }}
                       >
                         <input {...getInputProps()} />
-                        {!values.picture ? (
+                        {values.picture.name === user.picturePath ? (
                           <p>Add Picture Here</p>
                         ) : (
                           <FlexBetween>
@@ -148,10 +142,10 @@ const Settings = () => {
                     onChange={handleChange}
                     value={values.firstName}
                     name="firstName"
-                    // error={
-                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                    // }
-                    // helperText={touched.firstName && errors.firstName}
+                    error={
+                      Boolean(touched.firstName) && Boolean(errors.firstName)
+                    }
+                    helperText={touched.firstName && errors.firstName}
                     sx={{ gridColumn: "span 2" }}
                   />
                   <TextField
@@ -160,10 +154,10 @@ const Settings = () => {
                     onChange={handleChange}
                     value={values.lastName}
                     name="lastName"
-                    // error={
-                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                    // }
-                    // helperText={touched.firstName && errors.firstName}
+                    error={
+                      Boolean(touched.lastName) && Boolean(errors.lastName)
+                    }
+                    helperText={touched.lastName && errors.lastName}
                     sx={{ gridColumn: "span 2" }}
                   /><TextField
                     label="Location"
@@ -171,10 +165,10 @@ const Settings = () => {
                     onChange={handleChange}
                     value={values.location}
                     name="location"
-                    // error={
-                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                    // }
-                    // helperText={touched.firstName && errors.firstName}
+                    error={
+                      Boolean(touched.location) && Boolean(errors.location)
+                    }
+                    helperText={touched.location && errors.location}
                     sx={{ gridColumn: "span 2" }}
                   />
                   <TextField
@@ -183,10 +177,10 @@ const Settings = () => {
                     onChange={handleChange}
                     value={values.occupation}
                     name="occupation"
-                    // error={
-                    //   Boolean(touched.firstName) && Boolean(errors.firstName)
-                    // }
-                    // helperText={touched.firstName && errors.firstName}
+                    error={
+                      Boolean(touched.occupation) && Boolean(errors.occupation)
+                    }
+                    helperText={touched.occupation && errors.occupation}
                     sx={{ gridColumn: "span 2" }}
                   />
                   <Button
