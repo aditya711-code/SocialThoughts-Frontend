@@ -48,6 +48,7 @@ const initialValuesLogin = {
 };
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const[loader,setLoader]=useState(false);
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ const Form = () => {
     }
   };
   const login = async (values, onSubmitProps) => {
+    setLoader(true);
     axios.post(`${BASE_URL}/auth/login`, values, {
       method: "POST",
       headers: {
@@ -85,6 +87,7 @@ const Form = () => {
 
       const loggedIn = response.data;
       if (loggedIn) {
+        setLoader(false);
         dispatch(
           setLogin({
             user: loggedIn.user,
@@ -239,6 +242,7 @@ const Form = () => {
             <Button
               fullWidth
               type="submit"
+              disabled={loader}
               sx={{
                 m: "2rem 0",
                 p: "1rem",
@@ -247,7 +251,8 @@ const Form = () => {
                 "&:hover": { color: palette.primary.main },
               }}
             >
-              {isLogin ? "LOGIN" : "REGISTER"}
+              {loader?"Loading..."
+              :isLogin ? "LOGIN" : "REGISTER"}
             </Button>
             <Typography
               onClick={() => {
