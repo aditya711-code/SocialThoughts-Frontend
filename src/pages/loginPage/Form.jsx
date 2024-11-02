@@ -98,7 +98,7 @@ const Form = () => {
         navigate("/home");
       }
     }).catch((err) => {
-      toast.error(err.message, { position: "top-right", autoClose: 10000 })
+      toast.error("Password Incorrect or User does not exist!", { position: "top-right", autoClose: 10000 })
     })
 
   };
